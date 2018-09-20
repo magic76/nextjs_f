@@ -1,0 +1,30 @@
+{
+  "compilerOptions": {
+    "lib": ["dom", "es2015", "es2016"],
+    "jsx": "preserve",
+    "target": "esnext",
+    "module": "esnext",
+    "sourceMap": false,
+    "allowJs": true,
+    "alwaysStrict" : true,
+    "strict": true,
+    "removeComments": true,
+    "allowSyntheticDefaultImports": true,
+    "baseUrl": ".",
+    "inlineSourceMap": false,
+    "noImplicitAny": true,
+    "noImplicitThis": false,
+    "noImplicitReturns": true,
+    "noFallthroughCasesInSwitch": true,
+    "noStrictGenericChecks": false,
+    "noUnusedLocals": true,
+    "noUnusedParameters": false,
+    "skipDefaultLibCheck": true,
+    "skipLibCheck": true,
+    "strictNullChecks": true,
+    "paths": {
+      "~/*": ["./*"]
+    }
+  },
+  "exclude": ["node_modules", "static", "lib", "util/lib", "build", "test"]
+}

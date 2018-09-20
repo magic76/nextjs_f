@@ -1,0 +1,106 @@
+{
+  "extends": [
+    "tslint-react",
+    "tslint-config-airbnb"
+  ],
+  "rules": {
+    "import-name": false,
+    "jsx-no-multiline-js": false,
+    "comment-format": [
+      true,
+      "check-space"
+    ],
+    "align": [
+      true,
+      "parameters",
+      "statements"
+    ],
+    "max-line-length": [
+      true,
+      150
+    ],
+    "use-strict": [
+      false,
+      "check-module",
+      "check-function"
+    ],
+    "variable-name": [
+      true,
+      "ban-keywords"
+    ],
+    "no-string-literal": true,
+    "no-switch-case-fall-through": true,
+    "switch-default": true,
+    "no-consecutive-blank-lines": true,
+    "strict-type-predicates": true,
+    "no-inferred-empty-object-type": true,
+    "no-unused": [
+      true,
+      "ignore-parameters"
+    ],
+    "no-var-keyword": true,
+    "no-var-requires": false,
+    "space-before-function-paren": [
+      true,
+      {
+        "anonymous": "always",
+        "named": "never",
+        "asyncArrow": "always",
+        "method": "never"
+      }
+    ],
+    "ter-indent": [
+      true,
+      4,
+      {
+        "SwitchCase": 1
+      }
+    ],
+    "typedef-whitespace": [
+      true,
+      {
+        "call-signature": "nospace",
+        "index-signature": "nospace",
+        "parameter": "nospace",
+        "property-declaration": "nospace",
+        "variable-declaration": "nospace"
+      },
+      {
+        "call-signature": "onespace",
+        "index-signature": "onespace",
+        "parameter": "onespace",
+        "property-declaration": "onespace",
+        "variable-declaration": "onespace"
+      }
+    ],
+    "whitespace": [
+      true,
+      "check-branch",
+      "check-decl",
+      "check-operator",
+      "check-module",
+      "check-separator",
+      "check-rest-spread",
+      "check-type",
+      "check-typecast",
+      "check-type-operator",
+      "check-preblock"
+    ],
+    "typedef": [
+      true,
+      "call-signature",
+      "arrow-call-signature",
+      "parameter",
+      "arrow-parameter",
+      "property-declaration",
+      "variable-declaration",
+      "member-variable-declaration",
+      "object-destructuring",
+      "array-destructuring"
+    ],
+    "no-namespace": true,
+    "no-trailing-whitespace": true,
+    "no-else-after-return": false,
+    "jsx-no-lambda": [ false ]
+  }
+}

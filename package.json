@@ -1,0 +1,64 @@
+{
+  "name": "snk-web",
+  "version": "1.0.0",
+  "description": "snk-web",
+  "main": "server.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "ori": "next",
+    "dev": "nodemon server.ts"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://gitlab.boyu66.net/frontend/frontend_graph_api"
+  },
+  "author": "boyu",
+  "license": "ISC",
+  "dependencies": {
+    "apollo-boost": "^0.1.16",
+    "apollo-link-context": "^1.0.9",
+    "apollo-link-timeout": "^1.1.8",
+    "aws-xray-sdk-core": "^2.0.0",
+    "crypto-js": "^3.1.9-1",
+    "js-cookie": "^2.2.0",
+    "koa": "^2.5.3",
+    "koa-bodyparser": "^4.2.1",
+    "koa-router": "^7.4.0",
+    "next": "^7.0.0",
+    "react": "^16.5.2",
+    "react-dom": "^16.5.2",
+    "ua-parser-js": "^0.7.18"
+  },
+  "resolutions": {
+    "apollo-utilities": "^1.0.21"
+  },
+  "devDependencies": {
+    "@babel/core": "^7.1.0",
+    "@babel/preset-react": "^7.0.0",
+    "@types/node": "^10.10.1",
+    "@types/react": "^16.4.14",
+    "@types/react-dom": "^16.0.7",
+    "@types/react-ga": "^2.3.0",
+    "@types/webpack": "^4.4.12",
+    "@zeit/next-typescript": "^1.1.1",
+    "babel-core": "^6.26.3",
+    "babel-loader": "^8.0.2",
+    "babel-plugin-root-import": "^6.1.0",
+    "babel-polyfill": "^6.26.0",
+    "babel-preset-env": "^1.7.0",
+    "babel-preset-es2015": "^6.24.1",
+    "babel-preset-stage-0": "^6.24.1",
+    "concurrently": "^4.0.1",
+    "cross-env": "^5.2.0",
+    "happypack": "^5.0.0",
+    "jsonlint-cli": "^1.0.1",
+    "nodemon": "^1.18.4",
+    "pre-commit": "^1.2.2",
+    "ts-node": "^7.0.1",
+    "tslint": "^5.11.0",
+    "tslint-config-airbnb": "^5.11.0",
+    "tslint-react": "^3.6.0",
+    "typescript": "^3.0.3",
+    "webpack-bundle-analyzer": "^3.0.2"
+  }
+}

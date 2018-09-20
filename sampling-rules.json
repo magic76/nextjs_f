@@ -1,0 +1,49 @@
+{
+    "version": 1,
+    "rules": [
+      {
+        "description": "extentionName",
+        "service_name": "*",
+        "http_method": "*",
+        "url_path": "*.*",
+        "fixed_target": 0,
+        "rate": 0
+      },
+      {
+        "description": "api",
+        "service_name": "*",
+        "http_method": "*",
+        "url_path": "/api*",
+        "fixed_target": 0,
+        "rate": 1
+      },
+      {
+        "description": "cn",
+        "service_name": "*",
+        "http_method": "*",
+        "url_path": "/cn*",
+        "fixed_target": 0,
+        "rate": 0.1
+      },
+      {
+        "description": "vn",
+        "service_name": "*",
+        "http_method": "*",
+        "url_path": "/vn*",
+        "fixed_target": 0,
+        "rate": 0.1
+      },
+      {
+        "description": "th",
+        "service_name": "*",
+        "http_method": "*",
+        "url_path": "/th*",
+        "fixed_target": 0,
+        "rate": 0.1
+      }
+    ],
+    "default": {
+      "fixed_target": 0,
+      "rate": 0
+    }
+  }
