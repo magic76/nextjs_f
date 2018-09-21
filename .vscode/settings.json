@@ -4,6 +4,6 @@
         "**/*.js": { "when": "$(basename).ts" },
         "**/*?.js": { "when": "$(basename).tsx" }
     },
-    "tslint.autoFixOnSave": false,
+    "tslint.autoFixOnSave": true,
     "files.autoSave": "off"
 }

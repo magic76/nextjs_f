@@ -1,6 +1,4 @@
 import awsXray from './middleware/awsXray';
-// import util from './util/util';
-// import cookieUtil from './util/cookieUtil';
 
 const Koa: any = require('koa');
 const Router: any = require('koa-router');
