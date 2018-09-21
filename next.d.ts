@@ -8,6 +8,7 @@ declare module 'next/link' {
 
 declare module 'next/router';
 declare module 'next/head';
+declare module 'next/app';
 declare module 'next/config';
 declare module 'q';
 declare module 'next-redux-wrapper';
