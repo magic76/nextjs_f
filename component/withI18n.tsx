@@ -1,37 +1,59 @@
 import * as React from 'react';
-import util from '~/util/util';
-import memcachedUtil from '~/util/memcachedUtil';
 import * as fetch from 'isomorphic-fetch';
 
+import KeyComponent from '~/component/KeyComponent';
+import util from '~/util/util';
+import memcachedUtil from '~/util/memcachedUtil';
+
 !(global as any).langObj && ((global as any).langObj = {});
-const lang: string = 'zh-cn';
 
+interface IProps {
+    lang: string;
+    showkey: string;
+}
 //  tslint:disable-next-line
-const withI18n: any = (Child: any) => class Index extends React.Component<any, any> {
+const withI18n: any = (Child: any) => class Index extends React.Component<IProps, any> {
 
-    constructor(props: any) {
+    constructor(props: IProps) {
         super(props);
         this.state = {
-            i18n: (key: string): string => util.getValue((global as any).langObj, [lang, key]),
+            i18n: (key: string): string | JSX.Element => {
+                let value: JSX.Element | string;
+                const showkey = this.props.showkey;
+                const lang = this.props.lang;
+                switch (showkey) {
+                    case '1':
+                        value = `<${key}> ${util.getValue((global as any).langObj, [lang, key])}`;
+                        break;
+                    case '2':
+                        value = <KeyComponent langKey={key} value={util.getValue((global as any).langObj, [lang, key])} />;
+                        break;
+                    case '0':
+                    default:
+                        value = util.getValue((global as any).langObj, [lang, key]);
+                        break;
+                }
+                return value;
+
+            },
         };
     }
     componentWillMount(): void {
-        geti18n(lang);
+        geti18n(this.props.lang);
     }
     static async getInitialProps(ctx: any = {}): Promise<any> {
+        let childProps: any;
+        if (Child.hasOwnProperty('getInitialProps')) {
+            childProps = await Child.getInitialProps(ctx) || {};
+        }
+        const lang = childProps.lang;
         await memcachedUtil.getAndSet({
             key: 'I18N_Object',
             time: '60',
             lang: 'LANG',
             cb: geti18n.bind(null, lang),
         });
-
-        if (Child.hasOwnProperty('getInitialProps')) {
-            const childProps: any = await Child.getInitialProps(ctx) || {};
-            return childProps;
-        } else {
-            return {};
-        }
+        return childProps || {};
     }
     render(): JSX.Element {
         return <Child {...this.props} {...this.state}/>;

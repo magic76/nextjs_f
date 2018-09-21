@@ -48,4 +48,4 @@ class KeyComponent extends React.Component<any, any> {
     }
 }
 
-export default (key: string, targetLangKey: string): JSX.Element => <KeyComponent langKey={key} value={targetLangKey} />;
+export default KeyComponent;

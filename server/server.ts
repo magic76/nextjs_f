@@ -60,8 +60,8 @@ app.prepare().then((): any => {
         ctx.respond = false;
     });
     router.get('*', awsXray.openSegment(xrayName), async (ctx: any, next: any): Promise<any> => {
-        const reqUrl: string = ctx.url || '/';
-
+        let reqUrl: string = ctx.url || '/';
+        reqUrl = reqUrl.split('?')[0];
         await setXRayPageSegment(ctx, 'deviceType', async () => {
             await app.render(ctx.req, ctx.res, reqUrl, ctx.query);
         });
