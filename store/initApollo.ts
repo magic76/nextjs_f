@@ -6,19 +6,15 @@ import { InMemoryCache } from 'apollo-cache-inmemory';
 import { ApolloLink, Observable } from 'apollo-link';
 import { onError } from 'apollo-link-error';
 import ApolloLinkTimeout from 'apollo-link-timeout';
-import * as moment from 'moment';
-
 
 // util
 import util from '~/util/util';
 import graphqlApiUtil from '~/util/graphqlApiUtil';
 import memcachedUtil from '~/util/memcachedUtil';
 import cookieUtil from '~/util/cookieUtil';
-import config from '~/config';
 
 let apolloClient: any = null;
 const { SERVER_API_TIMEOUT }: any = process.env;
-const cache: any = new InMemoryCache();
 const httpLink: any = createHttpLink({
     fetch,
     uri: graphqlApiUtil.getGraphqlUri(),
@@ -78,14 +74,14 @@ const logTimeLink: any = (ctx: any = {}): any => new ApolloLink((operation: any,
                     requestPath: operation.operationName,
                     responseStatus: graphqlContext.status,
                     responseMilliSecond: Date.now() - graphqlContext.start,
-                    account: cookieUtil.get(config.COOKIE_ACCOUNT, ctx) || 'guest',
-                    createTime: moment(graphqlContext.start).format('YYYY-MM-DD HH:mm:ss'),
+                    account: 'guest',
+                    createTime: new Date(),
                     url: util.isClient ? util.getValue(global, ['location', 'href'], '') : `http://${ctx.domain}/${ctx.pathName}`,
                     cookie: util.isClient ? util.getValue(global, ['document', 'cookie'], '') : '',
                     requestObject: operation.toKey(),
                     responseObject: JSON.stringify(util.getValue(data, ['data']) || util.getValue(data, ['errors']) || {}),
                     source: util.isClient ? 'client' : 'server',
-                    token: cookieUtil.get(config.COOKIE_TOKEN, ctx) || '',
+                    token: '',
                 },
             };
         } catch (e) {
@@ -99,7 +95,7 @@ const logTimeLink: any = (ctx: any = {}): any => new ApolloLink((operation: any,
                     method: 'POST',
                     headers: {
                         'Content-Type': 'application/json; charset=UTF-8',
-                        'X-Amzn-Trace-Id': `Root=${cookieUtil.get(config.COOKIE_XRAY_ROOT_TRACE_ID, ctx)};Sampled=1`,
+                        'X-Amzn-Trace-Id': `Root=${cookieUtil.get('config.COOKIE_XRAY_ROOT_TRACE_ID', ctx)};Sampled=1`,
                     },
                     body: JSON.stringify(apiParam),
                 });

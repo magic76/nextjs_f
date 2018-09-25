@@ -1,6 +1,6 @@
 {
     "watch": ["server/**/*.ts"],
     "execMap": {
-      "ts": "ts-node --typeCheck --inspect --compilerOptions '{\"module\":\"commonjs\"}'"
+      "ts": "node --inspect -r ts-node/register"
     }
-  }
+}

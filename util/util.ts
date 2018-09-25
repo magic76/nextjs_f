@@ -1,8 +1,5 @@
 
-import keyComponent from '../component/KeyComponent';
 import config from '../config/config';
-
-const langObj: any = {};
 
 /**
  * 一般共用模組
@@ -34,47 +31,6 @@ export default class util {
             }
         });
         return result ? result : defaultValue;
-    }
-
-    /**
-     * 設定語系檔案資料
-     *
-     * @static
-     * @param {string} lang 語系
-     * @returns {*}
-     */
-    public static setLang(lang: string): any {
-        let request: any;
-        if (!langObj[lang]) {
-            const targetPath: string = util.getStaticUrl('lang.json');
-            try {
-                if ((global as any).document) {
-                    request = new (global as any).XMLHttpRequest();
-                    if (request) {
-                        request.open('GET', targetPath, false);
-                        request.send();
-                        (request.status === 200) && (langObj[lang] = JSON.parse(request.responseText));
-                    }
-                }
-            } catch (error) {
-                console.log(error);
-            }
-        }
-        const showkey: string = '0';
-        return {
-            get: (key: string): string | JSX.Element => {
-                const targetLang: any = util.getValue(global, ['langObj', lang]) || langObj[lang] || {};
-                if (showkey === '1') {
-                    return `<${key}> ${targetLang[key]}`;
-                } else if (showkey === '2') {
-                    return keyComponent(key, targetLang[key]);
-                } else if (targetLang[key] === undefined) {
-                    return '';
-                } else {
-                    return targetLang[key];
-                }
-            },
-        };
     }
 
     /**
@@ -156,7 +112,6 @@ export default class util {
         const parentDomain: string = (global as any).document.referrer;
         (global as any).window.top.location.href = `${parentDomain.split('/').slice(0, 3).join('/')}${url}`;
     }
-
 
     public static checkIfIncludedCSS(file: string): boolean {
         const links: any = (global as any).document.getElementsByTagName('link');

@@ -7,8 +7,8 @@
     "test": "echo \"Error: no test specified\" && exit 1",
     "ori": "next",
     "dev": "nodemon server/server.ts",
-    "build": "next build && tsc --project tsconfig.server.json",
-    "start": "NODE_ENV=production node .next/production-server/server.js"
+    "build": "next build && tsc",
+    "start": "NODE_ENV=production node .next/production-server/server/server.js"
   },
   "repository": {
     "type": "git",
@@ -18,7 +18,12 @@
   "license": "ISC",
   "dependencies": {
     "apollo-boost": "^0.1.16",
+    "apollo-cache-inmemory": "^1.2.10",
+    "apollo-client": "^2.4.2",
+    "apollo-link": "^1.2.3",
     "apollo-link-context": "^1.0.9",
+    "apollo-link-error": "^1.1.1",
+    "apollo-link-http": "^1.5.5",
     "apollo-link-timeout": "^1.1.8",
     "aws-xray-sdk-core": "^2.0.0",
     "crypto-js": "^3.1.9-1",

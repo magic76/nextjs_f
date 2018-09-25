@@ -3,7 +3,9 @@
     "lib": ["dom", "es2015", "es2016"],
     "jsx": "preserve",
     "target": "esnext",
-    "module": "esnext",
+    "module": "commonjs",
+    "rootDir": "./",
+    "outDir": ".next/production-server/",
     "sourceMap": false,
     "allowJs": true,
     "alwaysStrict" : true,
@@ -26,5 +28,5 @@
       "~/*": ["./*"]
     }
   },
-  "exclude": ["node_modules", "static", "lib", "util/lib", "build", "test"]
+  "exclude": ["node_modules", "static", "lib", "util/lib", "build", "test", "next.config.js"]
 }
