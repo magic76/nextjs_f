@@ -6724,6 +6724,10 @@ yargs@^12.0.1:
     y18n "^3.2.1 || ^4.0.0"
     yargs-parser "^10.1.0"
 
+ycb@^2.0.0:
+  version "2.0.0"
+  resolved "https://registry.yarnpkg.com/ycb/-/ycb-2.0.0.tgz#5996d9c6e686ea09c7c01f5174699fc6f5d76226"
+
 ylru@^1.2.0:
   version "1.2.1"
   resolved "https://registry.yarnpkg.com/ylru/-/ylru-1.2.1.tgz#f576b63341547989c1de7ba288760923b27fe84f"
