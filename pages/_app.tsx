@@ -1,6 +1,7 @@
 import App, { Container } from 'next/app';
 import React from 'react';
 import withI18n from '~/component/withI18n';
+import withApollo from '~/component/withApollo';
 import util from '~/util/util';
 import { AppContext } from '~/store/initContext';
 import getConfig from '~/config/pageConfig';
@@ -41,6 +42,7 @@ class MyApp extends App {
             pageProps,
             lang: 'zh-cn',
             query: ctx.query,
+            isMobile: false,
             isStartFromServer: !util.isClient,
             pageConfig: getConfig({
                 page: ctx.pathname,
@@ -63,4 +65,4 @@ class MyApp extends App {
     }
 }
 
-export default withI18n(MyApp);
+export default withI18n(withApollo(MyApp));

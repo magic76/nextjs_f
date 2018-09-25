@@ -12,15 +12,15 @@ import util from '~/util/util';
 import graphqlApiUtil from '~/util/graphqlApiUtil';
 import memcachedUtil from '~/util/memcachedUtil';
 import cookieUtil from '~/util/cookieUtil';
-
+import config from '~/config/config';
 let apolloClient: any = null;
-const { SERVER_API_TIMEOUT }: any = process.env;
 const httpLink: any = createHttpLink({
     fetch,
     uri: graphqlApiUtil.getGraphqlUri(),
     credentials: 'same-origin',
 });
 const authLink: any = (ctx: any): any => setContext(() => {
+
     return {
         headers: graphqlApiUtil.getGraphqlHeader(ctx),
     };
@@ -37,7 +37,7 @@ const errorLink: any = onError(({ graphQLErrors, networkError }: any) => {
 });
 
 function create(initialState: any, { params }: any): any {
-    const timeoutLink: any = new ApolloLinkTimeout(util.isClient ? 60 * 1000 : SERVER_API_TIMEOUT || 2000);
+    const timeoutLink: any = new ApolloLinkTimeout(util.isClient ? 60 * 1000 : config.serverApiTimeout || 2000);
     const timeoutHttpLink: any = timeoutLink.concat(httpLink);
     return new ApolloClient({
         connectToDevTools: true,

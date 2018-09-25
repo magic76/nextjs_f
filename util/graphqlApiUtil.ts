@@ -8,6 +8,27 @@ import util from './util';
 export default class graphqlApiUtil {
 
     /**
+     * 取得graphql機器uri
+     *
+     * @static
+     * @returns {string}
+     * @memberof graphqlApiUtil
+     */
+    public static getGraphqlUri(): string {
+        let host: string = '';
+        if (util.isClient) {
+            if (config.envStage === 'production') {
+                host = 'https://api.xanqjapi.com';
+            } else {
+                host = `http://api.xanqjapi-${config.envStage || 'beta'}.com`;
+            }
+        } else {
+            host = config.internalGqlHost;
+        }
+        return host;
+    }
+
+    /**
      * apollo 隨處call用（一定要帶上語系 e.q. zh-cn）
      * 若是要在server打且需判斷裝置，記得將ctx傳入，否則會判斷不到裝置
      *
@@ -45,27 +66,6 @@ export default class graphqlApiUtil {
             console.log('[ERROR][graphqlApiUtil] ', error);
             return {};
         }
-    }
-
-    /**
-     * 取得graphql機器uri
-     *
-     * @static
-     * @returns {string}
-     * @memberof graphqlApiUtil
-     */
-    public static getGraphqlUri(): string {
-        let host: string = '';
-        if (util.isClient) {
-            if (config.envStage === 'production') {
-                host = 'https://api.xanqjapi.com';
-            } else {
-                host = `http://api.xanqjapi-${config.envStage || 'beta'}.com`;
-            }
-        } else {
-            host = config.internalGqlHost;
-        }
-        return host;
     }
 
     /**

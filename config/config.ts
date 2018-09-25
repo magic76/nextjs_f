@@ -24,7 +24,8 @@ const configArray = [
     {
         settings: ['master'],
         envStage: getParam('ENV_STAGE') || 'alpha',
-        internalGqlHost: getParam('INTERNAL_GQL_HOST') || '',
+        internalGqlHost: getParam('INTERNAL_GQL_HOST') || 'https://api.xanqjapi.com',
+        serverApiTimeout: getParam('SERVER_API_TIMEOUT') || 2000,
     },
     {
         settings: ['environment:production'],
