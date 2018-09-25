@@ -8,7 +8,10 @@
     "ori": "next",
     "dev": "nodemon server/server.ts",
     "build": "next build && tsc",
-    "start": "NODE_ENV=production node .next/production-server/server/server.js"
+    "start": "NODE_ENV=production node .next/production-server/server/server.js",
+    "tslint": "tslint -c tslint.json **/*.tsx **/*.ts -e \"**/node_modules/**\"",
+    "jsonlint": "jsonlint-cli \"**/*.json\"",
+    "tsc_check": "tsc"
   },
   "repository": {
     "type": "git",
@@ -68,5 +71,10 @@
     "tslint-react": "^3.6.0",
     "typescript": "^3.0.3",
     "webpack-bundle-analyzer": "^3.0.2"
-  }
+  },
+  "pre-commit": [
+    "tslint",
+    "jsonlint",
+    "tsc_check"
+  ]
 }
