@@ -5,7 +5,6 @@ import withApollo from '~/component/withApollo';
 import util from '~/util/util';
 import { AppContext } from '~/store/initContext';
 import getConfig from '~/config/pageConfig';
-import config from '~/config/config';
 
 interface IProps {
     Component: any;
@@ -38,7 +37,6 @@ class MyApp extends App {
             pageProps = await Component.getInitialProps(ctx);
         }
         const propsObj = {
-            config,
             pageProps,
             lang: 'zh-cn',
             query: ctx.query,
@@ -48,13 +46,15 @@ class MyApp extends App {
                 page: ctx.pathname,
             }),
         };
+
+        // 在CSR換頁時，仍然保持與SSR時一樣的參數
         keepParamInCSRList.map((item: string) => (propsObj as any)[item] = ctx.query[item] || util.getValue(global, ['boyu', item]));
         return propsObj;
     }
 
     render(): JSX.Element {
-        const { Component, pageProps, i18n, query, lang, isStartFromServer, config, pageConfig }: IProps = this.props;
-        const customProps: any = { i18n, query, lang, isStartFromServer, config, pageConfig };
+        const { Component, pageProps, i18n, query, lang, isStartFromServer, pageConfig }: IProps = this.props;
+        const customProps: any = { i18n, query, lang, isStartFromServer, pageConfig };
         return (
             <Container>
                 <AppContext.Provider value={customProps}>
@@ -65,4 +65,4 @@ class MyApp extends App {
     }
 }
 
-export default withI18n(withApollo(MyApp));
+export default withApollo(withI18n(MyApp));

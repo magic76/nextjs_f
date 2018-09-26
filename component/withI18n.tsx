@@ -1,5 +1,5 @@
-import * as React from 'react';
-import * as fetch from 'isomorphic-fetch';
+import React from 'react';
+import fetch from 'isomorphic-fetch';
 
 import KeyComponent from '~/component/KeyComponent';
 import util from '~/util/util';

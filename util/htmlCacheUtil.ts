@@ -1,5 +1,5 @@
 const reactDOMServer: any = require('react-dom/server');
-import * as React from 'react';
+import React from 'react';
 
 import memcachedUtil from './memcachedUtil';
 

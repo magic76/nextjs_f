@@ -77,7 +77,11 @@ export default class graphqlApiUtil {
      * @memberof graphqlApiUtil
      */
     public static getGraphqlHeader(ctx?: any): any {
-        // const isServer: boolean = !(global as any).document;
-        return {};
+        return {
+            'brand-id': '5',
+            'lang-code': 'zh-cn',
+            'currency-id': '2',
+            'device-type': 2,
+        };
     }
 }

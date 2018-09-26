@@ -1,4 +1,4 @@
-import * as fetch from 'isomorphic-fetch';
+import fetch from 'isomorphic-fetch';
 import { ApolloClient } from 'apollo-client';
 import { createHttpLink } from 'apollo-link-http';
 import { setContext } from 'apollo-link-context';
@@ -14,17 +14,26 @@ import memcachedUtil from '~/util/memcachedUtil';
 import cookieUtil from '~/util/cookieUtil';
 import config from '~/config/config';
 let apolloClient: any = null;
-const httpLink: any = createHttpLink({
-    fetch,
-    uri: graphqlApiUtil.getGraphqlUri(),
-    credentials: 'same-origin',
-});
-const authLink: any = (ctx: any): any => setContext(() => {
 
+// 添加graphql header
+const authLink: any = (ctx: any): any => setContext(() => {
     return {
         headers: graphqlApiUtil.getGraphqlHeader(ctx),
     };
 });
+
+// 取得http request link
+const getHttpRequestLink: any = () => {
+    const httpLink: any = createHttpLink({
+        fetch,
+        uri: graphqlApiUtil.getGraphqlUri(),
+        credentials: 'same-origin',
+    });
+    const timeoutLink: any = new ApolloLinkTimeout(util.isClient ? 60 * 1000 : config.serverApiTimeout || 2000);
+    return timeoutLink.concat(httpLink);
+};
+
+// handle錯誤訊息
 const errorLink: any = onError(({ graphQLErrors, networkError }: any) => {
     if (graphQLErrors) {
         graphQLErrors.map(({ message, locations, path }: any) => {
@@ -36,31 +45,9 @@ const errorLink: any = onError(({ graphQLErrors, networkError }: any) => {
     }
 });
 
-function create(initialState: any, { params }: any): any {
-    const timeoutLink: any = new ApolloLinkTimeout(util.isClient ? 60 * 1000 : config.serverApiTimeout || 2000);
-    const timeoutHttpLink: any = timeoutLink.concat(httpLink);
-    return new ApolloClient({
-        connectToDevTools: true,
-        ssrMode: !util.isClient, // Disables forceFetch on the server (so queries are only run once)
-        link: ApolloLink.from(
-            [
-                apiLogLink(params.ctx),
-                memcachedLink(params.ctx),
-                errorLink,
-                authLink(params.ctx),
-                timeoutHttpLink,
-            ],
-        ),
-        cache: new InMemoryCache().restore(initialState || {}),
-    });
-}
-
-const timeStartLink: any = new ApolloLink((operation: any, forward: any): any => {
+// graphql 每一個請求加上log紀錄
+const apiLogLink: any = (ctx: any = {}): any => new ApolloLink((operation: any, forward: any): any => {
     operation.setContext({ start: Date.now() });
-    return forward(operation);
-});
-
-const logTimeLink: any = (ctx: any = {}): any => new ApolloLink((operation: any, forward: any): any => {
     return forward(operation).map((data: any) => {
         const graphqlContext: any = operation.getContext();
         let apiParam: any = {};
@@ -90,7 +77,7 @@ const logTimeLink: any = (ctx: any = {}): any => new ApolloLink((operation: any,
         setTimeout(() => {
             try {
                 const serverHost: string = util.isDev ? 'http://localhost:3000/api/log' : 'http://localhost/api/log';
-                const clientHost: string = `${(global as any).location.origin}/api/log`;
+                const clientHost: string = `${util.getValue(global, ['location', 'origin'])}/api/log`;
                 fetch(util.isClient ? clientHost : serverHost, {
                     method: 'POST',
                     headers: {
@@ -107,8 +94,7 @@ const logTimeLink: any = (ctx: any = {}): any => new ApolloLink((operation: any,
     });
 });
 
-const apiLogLink: any = (ctx: any): any => timeStartLink.concat(logTimeLink(ctx));
-
+// memcached的link
 const needMemcachedList: any[] = [
 ].map((gql: any) => gql.definitions[0].name.value);
 
@@ -182,13 +168,32 @@ const memcachedLink: any = (ctx: any): any => new ApolloLink((operation: any, fo
     return localObservable;
 });
 
+function create(initialState: any, { params }: any): any {
+    const httpRequestLink: any = getHttpRequestLink();
+    return new ApolloClient({
+        connectToDevTools: true,
+        ssrMode: !util.isClient, // Disables forceFetch on the server (so queries are only run once)
+        link: ApolloLink.from(
+            [
+                apiLogLink(params.ctx),
+                memcachedLink(params.ctx),
+                errorLink,
+                authLink(params.ctx),
+                httpRequestLink,
+            ],
+        ),
+        cache: new InMemoryCache().restore(initialState || {}),
+    });
+}
+
 export default function initApollo(params: any, initialState?: any): any {
-  // Make sure to create a new client for every server-side request so that data
-  // isn't shared between connections (which would be bad)
+    // Make sure to create a new client for every server-side request so that data
+    // isn't shared between connections (which would be bad)
     if (!util.isClient) {
         return create(initialState, { params });
     }
-  // Reuse client on the client-side
+
+    // Reuse client on the client-side
     if (!apolloClient) {
         apolloClient = create(initialState, { params });
     }

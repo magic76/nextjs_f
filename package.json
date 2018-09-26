@@ -30,6 +30,8 @@
     "apollo-link-timeout": "^1.1.8",
     "aws-xray-sdk-core": "^2.0.0",
     "crypto-js": "^3.1.9-1",
+    "graphql": "^14.0.2",
+    "graphql-tag": "^2.9.2",
     "js-cookie": "^2.2.0",
     "koa": "^2.5.3",
     "koa-bodyparser": "^4.2.1",

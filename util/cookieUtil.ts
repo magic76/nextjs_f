@@ -1,4 +1,4 @@
-import * as jscookie from 'js-cookie';
+import jscookie from 'js-cookie';
 
 import util from './util';
 
