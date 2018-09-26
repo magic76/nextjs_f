@@ -10,6 +10,7 @@ declare module 'next/router';
 declare module 'next/head';
 declare module 'next/app';
 declare module 'next/config';
+declare module 'next/document';
 declare module 'q';
 declare module 'next-redux-wrapper';
 declare module 'next/dist/lib/utils';
