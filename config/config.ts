@@ -14,9 +14,10 @@ const configArray = [
             {
                 environment: {
                     dev: null,
-                    staging: null,
-                    test: null,
-                    prod: null,
+                    qa: null,
+                    beta: null,
+                    alpha: null,
+                    production: null,
                 },
             },
         ],

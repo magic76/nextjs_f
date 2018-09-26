@@ -1,6 +1,5 @@
-import ApolloClient from 'apollo-boost';
-
 import config from '../config/config';
+import initApollo from '~/store/initApollo';
 
 // util
 import util from './util';
@@ -20,7 +19,7 @@ export default class graphqlApiUtil {
             if (config.envStage === 'production') {
                 host = 'https://api.xanqjapi.com';
             } else {
-                host = `http://api.xanqjapi-${config.envStage || 'beta'}.com`;
+                host = config.internalGqlHost;
             }
         } else {
             host = config.internalGqlHost;
@@ -39,19 +38,25 @@ export default class graphqlApiUtil {
      * @returns {Promise<any>}
      * @memberof graphqlApiUtil
      */
-    public static async query(gql: any, ctx: any, args?: any): Promise<any> {
+    public static async query(gql: any, ctx?: any, args?: any): Promise<any> {
         try {
-            const client: any = new ApolloClient({
-                uri: graphqlApiUtil.getGraphqlUri(),
-                request: async (operation: any): Promise<void> => {
-                    operation.setContext({
-                        headers: graphqlApiUtil.getGraphqlHeader(ctx),
-                    });
-                },
+            const client: any = initApollo(util.isClient ? {
+                domain: 'domain',
+                pathname: 'pathname',
+                lang: 'zh-cn',
+                isMobile: false,
+            } : {
+                domain: ctx.domain,
+                pathname: ctx.pathname,
+                lang: 'zh-cn',
+                isMobile: ctx.isMobile,
+                res: ctx.res,
             });
 
             const queryParam: any = {
                 query: gql,
+                fetchPolicy: 'network-only',
+                errorPolicy: 'all',
             };
 
             if (args) {

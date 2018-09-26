@@ -2,6 +2,8 @@ import React from 'react';
 import { withApp } from '~/store/initContext';
 import { Query } from 'react-apollo';
 import Link from '~/component/Link';
+import graphqlApiUtil from '~/util/graphqlApiUtil';
+import util from '~/util/util';
 
 const Index: (props: any) => JSX.Element = (props: any): JSX.Element => {
     const { app }: any = props;
@@ -13,9 +15,7 @@ const Index: (props: any) => JSX.Element = (props: any): JSX.Element => {
                     variables={{ limit: 20 }}
             >{
                 ({ data }: any): any => {
-                    console.log('data', data);
-
-                    return data && data.gb.list.soccer.map((item: any) => {
+                    return util.getValue(data, ['gb', 'list', 'soccer'], []).map((item: any) => {
                         return (
                             <div key={item.matchID}>
                                 <div>{item.matchName}</div>
@@ -26,7 +26,14 @@ const Index: (props: any) => JSX.Element = (props: any): JSX.Element => {
                     });
                 }}
             </Query>
-            <h1>Hello World {app.i18n('test')}</h1>
+            <h1
+                onClick={
+                () => {
+                    graphqlApiUtil.query(GET_GB_HOTMATCH).then((data: any) => console.log('gb query', data));
+                }}
+            >
+                Hello World {app.i18n('test')}
+            </h1>
             <h2>Current lang {app.lang}</h2>
         </div>
     );

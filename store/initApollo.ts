@@ -1,5 +1,5 @@
 import fetch from 'isomorphic-fetch';
-import { ApolloClient } from 'apollo-client';
+import { ApolloClient } from 'apollo-boost';
 import { createHttpLink } from 'apollo-link-http';
 import { setContext } from 'apollo-link-context';
 import { InMemoryCache } from 'apollo-cache-inmemory';
@@ -16,9 +16,14 @@ import config from '~/config/config';
 let apolloClient: any = null;
 
 // 添加graphql header
-const authLink: any = (ctx: any): any => setContext(() => {
+const authLink: any = (params: any): any => setContext(() => {
     return {
-        headers: graphqlApiUtil.getGraphqlHeader(ctx),
+        headers: {
+            'brand-id': '5',
+            'lang-code': params.lang,
+            'currency-id': '2',
+            'device-type': params.isMobile ? 2 : 1,
+        },
     };
 });
 
@@ -46,7 +51,7 @@ const errorLink: any = onError(({ graphQLErrors, networkError }: any) => {
 });
 
 // graphql 每一個請求加上log紀錄
-const apiLogLink: any = (ctx: any = {}): any => new ApolloLink((operation: any, forward: any): any => {
+const apiLogLink: any = (params: any = {}): any => new ApolloLink((operation: any, forward: any): any => {
     operation.setContext({ start: Date.now() });
     return forward(operation).map((data: any) => {
         const graphqlContext: any = operation.getContext();
@@ -57,13 +62,13 @@ const apiLogLink: any = (ctx: any = {}): any => new ApolloLink((operation: any, 
             apiParam = {
                 serviceName: 'GraphQL',
                 logParam: {
-                    deviceType: ctx.isMobile ? '2' : '1',
+                    deviceType: params.isMobile ? '2' : '1',
                     requestPath: operation.operationName,
                     responseStatus: graphqlContext.status,
                     responseMilliSecond: Date.now() - graphqlContext.start,
                     account: 'guest',
                     createTime: new Date(),
-                    url: util.isClient ? util.getValue(global, ['location', 'href'], '') : `http://${ctx.domain}/${ctx.pathName}`,
+                    url: util.isClient ? util.getValue(global, ['location', 'href'], '') : `http://${params.domain}/${params.pathname}`,
                     cookie: util.isClient ? util.getValue(global, ['document', 'cookie'], '') : '',
                     requestObject: operation.toKey(),
                     responseObject: JSON.stringify(util.getValue(data, ['data']) || util.getValue(data, ['errors']) || {}),
@@ -82,7 +87,7 @@ const apiLogLink: any = (ctx: any = {}): any => new ApolloLink((operation: any, 
                     method: 'POST',
                     headers: {
                         'Content-Type': 'application/json; charset=UTF-8',
-                        'X-Amzn-Trace-Id': `Root=${cookieUtil.get('config.COOKIE_XRAY_ROOT_TRACE_ID', ctx)};Sampled=1`,
+                        'X-Amzn-Trace-Id': `Root=${cookieUtil.get('config.COOKIE_XRAY_ROOT_TRACE_ID', { res: params.res })};Sampled=1`,
                     },
                     body: JSON.stringify(apiParam),
                 });
@@ -98,7 +103,7 @@ const apiLogLink: any = (ctx: any = {}): any => new ApolloLink((operation: any, 
 const needMemcachedList: any[] = [
 ].map((gql: any) => gql.definitions[0].name.value);
 
-const memcachedLink: any = (ctx: any): any => new ApolloLink((operation: any, forward: any): any => {
+const memcachedLink: any = (params: any): any => new ApolloLink((operation: any, forward: any): any => {
     const chainObservable: any = forward(operation);
 
     if (util.isClient) {
@@ -112,11 +117,11 @@ const memcachedLink: any = (ctx: any): any => new ApolloLink((operation: any, fo
     // ${裝置}&${gql名稱}&${gql參數值}
     const gqlKey: string = Object.keys(operation.variables).reduce((result: string, key: any) => {
         return `${result}&${operation.variables[key]}`;
-    }, `${ctx.isMobile ? 2 : 1}&${operation.operationName}`);
+    }, `${params.isMobile ? 2 : 1}&${operation.operationName}`);
 
     const localObservable: any = new Observable((observer: any): any => {
-        const foreverMemcached: any =  new Promise((resolve: any): any => resolve(memcachedUtil.get(`forever_${gqlKey}`, ctx.lang)));
-        const limitMemcached: any = new Promise((resolve: any): any => resolve(memcachedUtil.get(gqlKey, ctx.lang)));
+        const foreverMemcached: any =  new Promise((resolve: any): any => resolve(memcachedUtil.get(`forever_${gqlKey}`, params.lang)));
+        const limitMemcached: any = new Promise((resolve: any): any => resolve(memcachedUtil.get(gqlKey, params.lang)));
 
         return foreverMemcached.then((foreverData: any) => {
 
@@ -125,7 +130,7 @@ const memcachedLink: any = (ctx: any): any => new ApolloLink((operation: any, fo
             observer.complete();
 
             const errorHandle: any = (): any => {
-                memcachedUtil.set(gqlKey, foreverData, 300, ctx.lang);
+                memcachedUtil.set(gqlKey, foreverData, 300, params.lang);
             };
 
             return limitMemcached.then((limitData: any) => {
@@ -139,8 +144,8 @@ const memcachedLink: any = (ctx: any): any => new ApolloLink((operation: any, fo
                             if (result && !result.errors) {
 
                                 // api 正常回應時，設定limitKey & foreverKey
-                                memcachedUtil.set(`forever_${gqlKey}`, result, 60 * 60 * 24 * 30, ctx.lang);
-                                memcachedUtil.set(gqlKey, result, 300, ctx.lang);
+                                memcachedUtil.set(`forever_${gqlKey}`, result, 60 * 60 * 24 * 30, params.lang);
+                                memcachedUtil.set(gqlKey, result, 300, params.lang);
 
                             } else {
 
@@ -168,17 +173,17 @@ const memcachedLink: any = (ctx: any): any => new ApolloLink((operation: any, fo
     return localObservable;
 });
 
-function create(initialState: any, { params }: any): any {
+function create(initialState: any, params: any): any {
     const httpRequestLink: any = getHttpRequestLink();
     return new ApolloClient({
         connectToDevTools: true,
         ssrMode: !util.isClient, // Disables forceFetch on the server (so queries are only run once)
         link: ApolloLink.from(
             [
-                apiLogLink(params.ctx),
-                memcachedLink(params.ctx),
+                apiLogLink(getObject(params, ['domain', 'pathname', 'res', 'isMobile'])),
+                memcachedLink(getObject(params, ['lang', 'isMobile'])),
                 errorLink,
-                authLink(params.ctx),
+                authLink(getObject(params, ['lang', 'isMobile'])),
                 httpRequestLink,
             ],
         ),
@@ -186,16 +191,22 @@ function create(initialState: any, { params }: any): any {
     });
 }
 
+function getObject(obj: any, propertyArray: string[]): any {
+    const newObj: any = {};
+    propertyArray.map((key: string) => (newObj[key] = obj[key]));
+    return newObj;
+}
 export default function initApollo(params: any, initialState?: any): any {
+
     // Make sure to create a new client for every server-side request so that data
     // isn't shared between connections (which would be bad)
     if (!util.isClient) {
-        return create(initialState, { params });
+        return create(initialState, params);
     }
 
     // Reuse client on the client-side
     if (!apolloClient) {
-        apolloClient = create(initialState, { params });
+        apolloClient = create(initialState, params);
     }
     return apolloClient;
 }

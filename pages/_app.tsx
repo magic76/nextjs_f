@@ -42,9 +42,7 @@ class MyApp extends App {
             query: ctx.query,
             isMobile: false,
             isStartFromServer: !util.isClient,
-            pageConfig: getConfig({
-                page: ctx.pathname,
-            }),
+            pageConfig: getConfig(ctx.pathname),
         };
 
         // 在CSR換頁時，仍然保持與SSR時一樣的參數

@@ -19,11 +19,11 @@ export default (App: any) => {
             // and extract the resulting data
             const apollo = initApollo(
                 {
-                    ctx: ctx.ctx,
-                    headerParam: {
-                        isMobile: appProps.isMobile,
-                        lang: appProps.lang,
-                    },
+                    isMobile: appProps.isMobile,
+                    lang: appProps.lang,
+                    domain: 'domain',
+                    pathname: '/',
+                    res: ctx.ctx.res,
                 },
             );
             if (!(global as any).document) {
@@ -55,12 +55,12 @@ export default (App: any) => {
 
         constructor (props: any) {
             super(props);
+            console.log('before rednd', props);
             this.apolloClient = initApollo({
-                headerParam: {
-                    isMobile: props.isMobile,
-                    lang: props.lang,
-                },
-                ctx: props,
+                isMobile: props.isMobile,
+                lang: props.lang,
+                domain: 'domain',
+                pathname: '/',
             }, props.apolloState);
         }
 

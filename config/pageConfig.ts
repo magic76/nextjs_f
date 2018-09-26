@@ -5,7 +5,8 @@ const configArray = [
         dimensions: [
             {
                 page: {
-                    index: null,
+                    '/': null,
+                    '/index': null,
                 },
             },
         ],
@@ -14,15 +15,16 @@ const configArray = [
         settings: ['master'],
     },
     {
-        settings: ['page:/'],
+        settings: ['page:/,/index'],
         page: '/',
+        testObj: {
+            title: 'home page',
+            number: 8,
+        },
     },
 ];
 
-export default (params: any) => {
-
-    // 新增頁面時，可不用加dimension就可以直接寫config
-    (configArray as any)[0].dimensions[0].page[params.page] = null;
+export default (page: string) => {
     const ycbObj = new YCB.Ycb(configArray);
-    return ycbObj.read(params);
+    return ycbObj.read({ page });
 };
