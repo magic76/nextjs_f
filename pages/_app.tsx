@@ -5,6 +5,8 @@ import withApollo from '~/component/withApollo';
 import util from '~/util/util';
 import { AppContext } from '~/store/initContext';
 import getConfig from '~/config/pageConfig';
+import eventUtil from '~/util/eventUtil';
+import graphqlApiUtil from '~/util/graphqlApiUtil';
 
 interface IProps {
     Component: any;
@@ -18,6 +20,9 @@ interface IProps {
     lang: string;
     config: any;
     pageConfig: any;
+    domain: string;
+    pathname: string;
+    isMobile: boolean;
 }
 
 const keepParamInCSRList = ['showkey', 'perf'];
@@ -29,6 +34,14 @@ class MyApp extends App {
             !(global as any).boyu && ((global as any).boyu = {});
             keepParamInCSRList.map((item: string) => (global as any).boyu[item] = (props as any)[item]);
         }
+        eventUtil.on('graphqlApi', ({ gql, args, cb }: any) => {
+            graphqlApiUtil.query(gql, {
+                domain: props.domain,
+                pathname: props.pathname,
+                lang: props.lang,
+                isMobile: props.isMobile,
+            }, args).then((data: any) => cb(data));
+        });
 
     }
     static async getInitialProps({ Component, ctx }: IProps): Promise<any> {

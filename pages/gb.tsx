@@ -29,7 +29,8 @@ const Index: (props: any) => JSX.Element = (props: any): JSX.Element => {
             <h1
                 onClick={
                 () => {
-                    graphqlApiUtil.query(GET_GB_HOTMATCH).then((data: any) => console.log('gb query', data));
+                    graphqlApiUtil.clientQuery(GET_GB_HOTMATCH).then((data: any) => console.log('gql client query', data));
+                    graphqlApiUtil.query(GET_GB_HOTMATCH, {}, { limit: 20 }).then((data: any) => console.log('gql query', data));
                 }}
             >
                 Hello World {app.i18n('test')}
